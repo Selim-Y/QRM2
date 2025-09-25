@@ -1,0 +1,183 @@
+---
+title: "Untitled"
+output: html_document
+date: "2025-09-25"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+For the next part of the assignment, assume that the movies in your data frame are a random sample of a larger population of movies. 
+
+
+
+STARTS HERE OKAY!!!!!!!!!!!!!!!!!!!!
+LALALALALLALALA
+
+
+1
+
+a. Create a new data set that only includes movies that are of the genre "Thriller". For these thriller movies, give a 99 percent confidence interval for the variable *runtime*. Interpret the result. \textbf{[2 points]}
+b. Now, assume that the variance of *runtime* amongst thriller movies in your data is exactly the same as the variance of *runtime* in the population. Under this assumption, give a 99 percent confidence interval for the variable *runtime* among thriller movies. Interpret the result. Is you confidence interval wider or less wide than the one you found under question 1a? Why is that the case? \textbf{[2 points]}
+
+*step a*
+
+```{r}
+thriller <- movies1 %>% 
+  filter(genre == "Thriller", !is.na(runtime))
+n <- nrow(thriller)
+variable <- var(thriller$runtime)
+
+alpha <- 0.01
+CI <- (n -1)*variable / qchisq(c(0.995, 0.005), df = n -1)
+CI
+
+
+```
+
+**Your Answer:**
+
+186.5459 and 468.0735
+
+*step b*
+
+```{r}
+mean_thriller_runtime <- mean(thriller$runtime)
+error <- sqrt(variable / n)
+z <- qnorm(0.995)
+
+CI_mean <- mean_thriller_runtime + c(-1,1)*z*error
+CI_mean
+```
+
+**Your Answer:**
+
+100.1081 and 110.8457
+
+
+2
+
+a. Using an appropriate five-step procedure, set up a test for the null hypothesis that the variance of runtime equals $500$. Clearly state your null hypothesis, alternative hypothesis your test statistic, your critical value, and your conclusion. \textbf{[2 points]}
+b. For the validity of your test in 2a, what assumption about the distribution of revenue needs to hold? Make an appropriate plot to test this assumption. What do you conclude? \textbf{[2 points]}
+
+*step a*
+
+```{r}
+sigma_hypo <- 500
+test_hypo <- (n - 1)*variable / sigma_hypo
+
+alpha <- 0.05
+critical_val <- qchisq(c(alpha/2 , 1 - alpha/2), df = n-1)
+test_hypo
+critical_val
+
+```
+
+**Your Answer:**
+
+test_hypo = 36.14443
+critical_val = 43.77595 88.00405
+
+*step b*
+
+```{r}
+
+ggplot(thriller, aes(x = runtime)) +
+  geom_histogram(bins = 20, fill = "lightblue", color = "black") +
+  labs(title = "Thriller Runtimes Histogram")
+```
+
+**Your Answer:**
+Write your formulated response here.
+I mean it looks normal to me..?
+
+3. There is an argument going on in the movie studio. *Bob* claims that they should make higher-quality movies, as this will bring in more profits. *Chantal* disagrees. She tells Bob that mediocre movies bring in the most profits. You are asked to advise on who is right.
+
+a. Create a new variable called vote_average_rounded. Make sure this variable is the same as vote_average, but without any decimals (i.e., a 6.3 becomes a 6, a 8.7 an 8, etc.). Display a histogram of vote_average_rounded. \textbf{[2 points]}
+b. Create a scatter plot with vote_average_rounded on the x axis and the mean of profits within each category of vote_average_rounded on the y-axis. Make sure it has an appropriate title, and appropriate titles and labels for the x- and y-axis. At which rating of movies are profits the highest? \textbf{[3 points]}
+c. Recreate the scatter plot with year on the x axis and mean_profits on the y-axis, but now add bars around each point, indicating the 95\% confidence interval. \textbf{[3 points]}
+d. Write an advice to settle the argument between Bob and Chantal. \textbf{[4 points]}
+
+*step a*
+
+```{r}
+movies1 <- movies1 %>%
+  mutate(vote_average_rounded = round(vote_average))
+
+ggplot(movies1, aes(x = vote_average_rounded)) +
+  geom_histogram(binwidth = 1, fill = "lightblue", color = "black") +
+  labs(title = "Rounded Vote Averages Histogram")
+
+```
+
+**Your Answer:**
+
+Shows that rating are between 5-7?
+
+*step b*
+
+```{r}
+rating_profits <- movies1 %>%
+  group_by(vote_average_rounded) %>%
+  summarize(mean_profits = mean(profits, na.rm = TRUE))
+rating_profits
+
+ggplot(rating_profits, aes(x = vote_average_rounded, y = mean_profits)) +
+  geom_point(size = 2, color = "black") +
+  labs(title = "Mean Profits by Rating",
+       x = "Vote Average Rounded",
+       y = "Mean Profits")
+```
+
+**Your Answer:**
+
+i mean the profit increase as the vote goes up? so like at 8 profit is the highest? or am i wrong?
+
+*step c*
+
+```{r}
+z2 <- qnorm(0.975)
+year_profits <- movies1 %>%
+  group_by(release_year) %>%
+  summarize(mean_profits = mean(profits, na.rm = TRUE),
+            error = sd(profits, na.rm = TRUE)/sqrt(n()),
+            .groups = "drop") %>%
+  mutate(lower = mean_profits - z2*error,
+         higher = mean_profits + z2*error)
+
+ggplot(year_profits, aes(x = release_year , y = mean_profits)) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin = lower, ymax = higher), width = 0.2) +
+  labs(title = "Mean Profits by Year (95% CI)", x = "Year", y = "Mean Profits")
+```
+
+**Your Answer:**
+
+what am i supposed to see here.. the profit with 95% CI is consistent over the year?
+
+*step d*
+
+**Your Answer:**
+
+I think Chantal is correct man. i mean look at 3a them peoples vote highest around 6 so like mediocre movies bring profits?? At this point i'm just yapping and don't even know if im right or wrong

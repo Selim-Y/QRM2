@@ -28,6 +28,14 @@ format:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r load-data, echo=TRUE}
+movies <- readr::read_tsv("Datasets/movies1.tsv")
+```
+
+```{r libraries, include=FALSE}
+library(tidyverse)
+```
+
 # Introduction
 
 This assignment is to be completed in groups of 3-4. Further, all students in your group need to be assigned to the same R tutorial group (Friday's tutorial). You can sign yourself up for a group on Canvas. Please do so \textbf{before the start of your first R tutorial on Friday September 5th.} You can use the Discussion Board in Canvas if you do not have a group yet or if your group is incomplete.
@@ -184,6 +192,7 @@ c.  How trustworthy do you consider your conclusion to answer 2b? Use the term "
 ```{r}
 actor_counts <- table(movies$first_actor)
 sorted_actors <- sort(actor_counts, decreasing = TRUE)
+top_actor <- names(sort(table(movies$first_actor), decreasing = TRUE))[1]
 cat(top_actor)
 
 ```
@@ -262,7 +271,7 @@ variance_sample <- var(movies_sample$profits_millions, na.rm = TRUE)
 cat("Sample profits variance:", variance_sample, "\n")
 cat("The population profits variance:", population_variance, "\n")
 
-if(variance_sample > variance_population) {
+if(variance_sample > population_variance) {
   cat("The sample profits variance is larger than the population profits variance.\n")
 } else {
   cat("The sample profits variance is smaller than the population profits variance.\n")
@@ -333,7 +342,7 @@ b. Now, assume that the variance of *runtime* amongst thriller movies in your da
 *step a*
 
 ```{r}
-thriller <- movies1 %>% 
+thriller <- movies %>% 
   filter(genre == "Thriller", !is.na(runtime))
 n <- nrow(thriller)
 variable <- var(thriller$runtime)
@@ -415,21 +424,33 @@ d. Write an advice to settle the argument between Bob and Chantal. \textbf{[4 po
 *step a*
 
 ```{r}
-#WRITE YOUR CODE HERE
+movies <- movies %>%
+  mutate(vote_average_rounded = round(vote_average))
+
+ggplot(movies, aes(x = vote_average_rounded)) +
+  geom_histogram(binwidth = 1, fill = "lightblue", color = "black") +
+  labs(title = "Rounded Vote Averages Histogram")
 
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+Shows that rating are between 5-7
 
 *step b*
 
 ```{r}
-#WRITE YOUR CODE HERE
+rating_profits <- movies %>%
+  group_by(vote_average_rounded) %>%
+  summarize(mean_profits = mean(profits, na.rm = TRUE))
+rating_profits
 
-
+ggplot(rating_profits, aes(x = vote_average_rounded, y = mean_profits)) +
+  geom_point(size = 2, color = "black") +
+  labs(title = "Mean Profits by Rating",
+       x = "Vote Average Rounded",
+       y = "Mean Profits")
 ```
 
 **Your Answer:**
