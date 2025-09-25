@@ -1,0 +1,7 @@
+"0",""
+"0","movies$profits<-movies$revenue-movies$budget"
+"0","mean_profits<-mean(movies$profits)"
+"0","median_profits<-median(movies$profits)"
+"0","max_profit<-max(movies$profits)"
+"0","min_profits<-min(movies$profits)"
+"0",""

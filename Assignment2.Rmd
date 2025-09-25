@@ -1,7 +1,7 @@
 ---
 title: "QRM II Graded Assignment (2), Period 1 2025"
 subtitle: "Material by Sjoerd van Alten and Klervie Toczé"
-author: "Group Number 63, Members: YA.E. Gaziev (Aziz), J.C.L. Chen (Josie), S.E. Yakali (Selim), Y. Seo (Yonu)"
+author: "Group Number 63: YA.E. Gaziev (Aziz), J.C.L. Chen (Josie), S.E. Yakali (Selim), Y. Seo (Yonu)"
 date:  "`r format(Sys.Date(), '%d-%m-%Y')`"
 output:
   pdf_document:
@@ -119,13 +119,12 @@ points you can earn per week is 20 points.
     How many subjects? What consists of a subject? \textbf{[4 points]}
 
 ```{r}
-movies1<-read.table("movies1.tsv", sep="\t", header = TRUE)
 
-head(movies1)
+head(movies)
 
-nrow(movies1)
+nrow(movies)
 
-ncol(movies1)
+ncol(movies)
 
 ```
 
@@ -196,11 +195,11 @@ the question and then formulate an answer using full sentences.
 
 ```{r}
 
-movies1$profits<-movies1$revenue-movies1$budget
-mean_profits<-mean(movies1$profits)
-median_profits<-median(movies1$profits)
-max_profit<-max(movies1$profits)
-min_profits<-min(movies1$profits)
+movies$profits<-movies$revenue-movies$budget
+mean_profits<-mean(movies$profits)
+median_profits<-median(movies$profits)
+max_profit<-max(movies$profits)
+min_profits<-min(movies$profits)
 
 ```
 
@@ -216,8 +215,8 @@ Min Profit = -90000000
 
 ```{r}
 
-movies1[which.max(movies1$profits), "title"]
-movies1[which.min(movies1$profits), "title"]
+movies[which.max(movies$profits), "title"]
+movies[which.min(movies$profits), "title"]
 
 
 ```
@@ -230,12 +229,12 @@ The movie with the maximum profit is "Avatar" and the movie with the minimum pro
 
 ```{r}
 
-ggplot(movies1, aes(y = profits))+
+ggplot(movies, aes(y = profits))+
         geom_boxplot()+
         labs(title = "Distribution of Profits",
         ylab = "profits")+
         scale_y_continuous(limits = c(-90000000,270000000), breaks = seq(-90000000,270000000, by = 30000000))
-quantile(movies1$profits, probs = c(0.25, 0.5, 0.75, 1))
+quantile(movies$profits, probs = c(0.25, 0.5, 0.75, 1))
 
 ```
 
@@ -248,9 +247,9 @@ It shows that it is highly competitive industry where very few movies become pro
 ```{r}
 
 
-movies1$log_profits<-log(movies1$profits)
+movies$log_profits<-log(movies$profits)
 
-mean(movies1$log_profits, na.rm = TRUE)
+mean(movies$log_profits, na.rm = TRUE)
 
 
 ```
@@ -264,9 +263,9 @@ When profits are equal to 0, the log_profits of the observation is equal to -inf
 ```{r}
 
 
-mean(movies1$log_profits, na.rm = FALSE)
+mean(movies$log_profits, na.rm = FALSE)
 
-ggplot(movies1, aes(x=log_profits))+
+ggplot(movies, aes(x=log_profits))+
   geom_boxplot()+
   labs(title = "Distribution of Profits",
         xlab = "movies",     
@@ -286,7 +285,7 @@ With values of profits equal or less than 0 being replaced with "NA", the mean o
 
 ```{r}
 
-ggplot(movies1, aes(x = runtime, y = vote_average))+
+ggplot(movies, aes(x = runtime, y = vote_average))+
   geom_point()+
   geom_smooth(method = lm, se = TRUE)+
   scale_x_continuous(limits = c(0,280), breaks = seq(0,280, by = 20))+
@@ -672,13 +671,13 @@ ggplot(year_profits, aes(x = release_year , y = mean_profits)) +
 
 **Your Answer:**
 
-Write your formulated response here.
+In this scatterplot we observe that the periods 1990-1995 and 2009 were quite profitable years for movies.
 
 *step d*
 
 **Your Answer:**
 
-Write your formulated response here.
+As the original argument between Bob and Chantal was about quality vs quantity, lets look at what the data proposes. For this argument, the second diagram proves to be most relevant, as it plots mean profits against average ratings for movies. From this, we observe that there is an exponential positive relationship between the two, thus Bob's claim that higher quality movies bring in the most profits holds true, but only to an extent, as it is likely possible to pump out more mediocre-quality movies than it is high-quality movies.
 
 # Week 4
 

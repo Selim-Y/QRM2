@@ -1,0 +1,5 @@
+"0","sum(movies$first_actor == ""Bruce Willis"", na.rm = TRUE)"
+"1","[1]"
+"1"," 7"
+"1","
+"

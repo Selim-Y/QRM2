@@ -1,0 +1,5 @@
+"0","actor_counts <- table(movies$first_actor)"
+"0","sorted_actors <- sort(actor_counts, decreasing = TRUE)"
+"0","top_actor <- names(sort(table(movies$first_actor), decreasing = TRUE))[1]"
+"0","cat(top_actor)"
+"1","Bruce Willis"

@@ -1,0 +1,3 @@
+"0","ggplot(thriller, aes(x = runtime)) +"
+"0","  geom_histogram(bins = 20, fill = ""lightblue"", color = ""black"") +"
+"0","  labs(title = ""Thriller Runtimes Histogram"")"

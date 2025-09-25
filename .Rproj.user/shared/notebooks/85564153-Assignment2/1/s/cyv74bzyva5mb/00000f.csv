@@ -1,0 +1,6 @@
+"0",""
+"0","ggplot(movies, aes(y = profits))+"
+"0","        geom_boxplot()+"
+"0","        labs(title = ""Distribution of Profits"","
+"0","        ylab = ""profits"")+"
+"0","        scale_y_continuous(limits = c(-90000000,270000000), breaks = seq(-90000000,270000000, by = 30000000))"

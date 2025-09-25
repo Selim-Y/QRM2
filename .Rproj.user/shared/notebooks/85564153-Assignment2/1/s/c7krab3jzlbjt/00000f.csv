@@ -1,0 +1,4 @@
+"0","rating_profits <- movies %>%"
+"0","  group_by(vote_average_rounded) %>%"
+"0","  summarize(mean_profits = mean(profits, na.rm = TRUE))"
+"0","rating_profits"

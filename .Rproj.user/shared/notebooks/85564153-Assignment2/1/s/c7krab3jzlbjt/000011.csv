@@ -1,0 +1,6 @@
+"0",""
+"0","ggplot(rating_profits, aes(x = vote_average_rounded, y = mean_profits)) +"
+"0","  geom_point(size = 2, color = ""black"") +"
+"0","  labs(title = ""Mean Profits by Rating"","
+"0","       x = ""Vote Average Rounded"","
+"0","       y = ""Mean Profits"")"
