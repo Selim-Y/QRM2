@@ -71,23 +71,41 @@ Each week consists of 1, 2, or 3 subquestions. The total amount of points you ca
 1.  Find the dataset “movies1.tsv” on Canvas. Describe your data set: How many observations does it have. How many variables are there? How many subjects? What consists of a subject? \textbf{[4 points]}
 
 ```{r}
-#WRITE YOUR CODE HERE
+movies1<-read.table("movies1.tsv", sep="\t", header = TRUE)
+
+head(movies1)
+
+nrow(movies1)
+
+ncol(movies1)
+
 ```
 
 **Your Answer:**
 
-Write your response here.
+The Number of rows shows 505 observations
+The Number of columns shows 19 variables. 
+The number of subjects in this dataset is equal to 505 same as observations. Since each subject is a movie in this dataset.
+
 
 
 2. Which of the following types of variables are present in your data set? (i) nominal; (ii) ordinal; (iii); interval; (iv) ratio. If present, name one example of such a variable present in your data set. \textbf{[4 points]}
 
 ```{r}
-#WRITE YOUR CODE HERE
+nominal_var<- "title"
+ordinal_var<- "popularity"
+interval_var<-"release_date"
+ratio_var<- "revenue"
+
 ```
 
 **Your Answer:**
 
-Write your response here.
+nominal example: "title"
+This dataset does not have an obvious ordinal example, but "popularity" can be considered as one.
+interval example:"release_date"
+ratio example:"revenue"
+
 
 
 3. A movie studio wants to know which types of movies give maximal profit. Perform the following steps to provide the movie studio with an analysis which corresponds to their request:
@@ -105,73 +123,109 @@ For each step, you should provide first all the code you used to answer the ques
 
 ```{r}
 
-#WRITE YOUR CODE HERE
+movies1$profits<-movies1$revenue-movies1$budget
+mean_profits<-mean(movies1$profits)
+median_profits<-median(movies1$profits)
+max_profit<-max(movies1$profits)
+min_profits<-min(movies1$profits)
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+Mean Profit = 63121475.22
+Median Profit = 1900000
+Max Profit = 2550965087
+Min Profit = -90000000
+
 
 *Step b*
 
 ```{r}
 
-#WRITE YOUR CODE HERE
+movies1[which.max(movies1$profits), "title"]
+movies1[which.min(movies1$profits), "title"]
+
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+The movie with the maximum profit is "Avatar" and the movie with the minimum profit is "Mighty Joe Young".
 
 *Step c*
 
 ```{r}
 
-#WRITE YOUR CODE HERE
+ggplot(movies1, aes(y = profits))+
+        geom_boxplot()+
+        labs(title = "Distribution of Profits",
+        ylab = "profits")+
+        scale_y_continuous(limits = c(-90000000,270000000), breaks = seq(-90000000,270000000, by = 30000000))
+quantile(movies1$profits, probs = c(0.25, 0.5, 0.75, 1))
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+It shows that it is highly competitive industry where very few movies become profitable. It may be concluded that it is high risk industry but with high rewards.
 
 *Step d*
 
 ```{r}
 
-#WRITE YOUR CODE HERE
+
+movies1$log_profits<-log(movies1$profits)
+
+mean(movies1$log_profits, na.rm = TRUE)
+
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+When profits are equal to 0, the log_profits of the observation is equal to -inf, and the log_profit of the observation with profits below 0 produced NaN, since the log of a negative number is undefined. Therefore, when calculating the mean of log_profits is given as -Inf (when na.rm = TRUE), and NaN(when na.rm = FALSE)..
 
 *Step e*
 
 ```{r}
 
-#WRITE YOUR CODE HERE
+
+mean(movies1$log_profits, na.rm = FALSE)
+
+ggplot(movies1, aes(x=log_profits))+
+  geom_boxplot()+
+  labs(title = "Distribution of Profits",
+        xlab = "movies",     
+        ylab = "log_ptrofits")+
+  scale_x_continuous(breaks = seq(0, 25, by = 5), limits = c(0,25))
+
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+With values of profits equal or less than 0 being replaced with "NA", the mean of log_profit is 17.38. As for the differences with the boxplot under subquestion c. The profits boxplot included all values including negative, while log_profits boxplot only included positive values. The log_profits boxplot has less outliers and values are more symmetrically distributed strongly suggesting log_profits to have normal distribution. On the other hand, it ignores the observations that include unsuccessful movies with negative or small profitability, ignoring the competitive nature of the movie industry.
+
+
 
 *Step f*
 
 ```{r}
 
-#WRITE YOUR CODE HERE
+ggplot(movies1, aes(x = runtime, y = vote_average))+
+  geom_point()+
+  geom_smooth(method = lm, se = TRUE)+
+  scale_x_continuous(limits = c(0,280), breaks = seq(0,280, by = 20))+
+  labs(title = "Runtime and average vote relationship",
+       x = "runtime",
+       y = "vote_average")
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+The slope of the regression line is relatively flat with the upward position. Meaning that runtime has a relatively weak positive relationship with vote_average. It is evident that most of the observations are clustered in the range of 80 to 150 minutes of runtime. And the majority of movies that fall in this runtime range are with vote_average of 5 and above, while very few movies with runtime of 80 minutes have vote_average lower than 5. Overall, it may be concluded that runtime and vote_average has weak relationships and viewers do not have a strong preference.
 
 # Week 2 
 1 Is your dataset movies1.tsv the full population, or is it a sample of a larger population? If the latter, how would you describe the full population? \textbf{[4 points]}
@@ -679,4 +733,5 @@ Write your formulated response here.
 #WRITE YOUR CODE HERE
 
 ```
+
 
