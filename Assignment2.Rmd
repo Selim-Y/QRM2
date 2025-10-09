@@ -256,7 +256,7 @@ mean(movies$log_profits, na.rm = TRUE)
 
 **Your Answer:**
 
-When profits are equal to 0, the log_profits of the observation is equal to -inf, and the log_profit of the observation with profits below 0 produced NaN, since the log of a negative number is undefined. Therefore, when calculating the mean of log_profits is given as -Inf (when na.rm = TRUE), and NaN(when na.rm = FALSE)..
+When profits are equal to $0$, the $log\_profits$ of the observation is equal to $-\infty$, and the $log\_profit$ of the observation with profits below $0$ produced $\text{NaN}$, since the log of a negative number is undefined. When calculating the mean of log profits, those infinite and NaN values will be excluded if using `na.rm = TRUE`.
 
 *Step e*
 
@@ -297,7 +297,7 @@ ggplot(movies, aes(x = runtime, y = vote_average))+
 
 **Your Answer:**
 
-The slope of the regression line is relatively flat with the upward position. Meaning that runtime has a relatively weak positive relationship with vote_average. It is evident that most of the observations are clustered in the range of 80 to 150 minutes of runtime. And the majority of movies that fall in this runtime range are with vote_average of 5 and above, while very few movies with runtime of 80 minutes have vote_average lower than 5. Overall, it may be concluded that runtime and vote_average has weak relationships and viewers do not have a strong preference.
+The slope of the regression line is relatively flat with an upward position. This means that runtime has a relatively weak positive relationship with $vote\_average$. It is evident that most of the observations are clustered around the middle, so there is no strong preference for longer or shorter movies. The majority of movies that fall in this runtime range are with vote_average of 5 and above, while very few movies with runtime of 80 minutes have vote_average lower than 5. Overall, it may be concluded that runtime and vote_average has weak relationships and viewers do not have a strong preference.
 
 # Week 2
 
@@ -569,7 +569,12 @@ critical_val
 
 **Your Answer:**
 
-test_hypo = 36.14443 critical_val = 43.77595 88.00405
+Test statistic: $36.14$  
+Critical values: $43.78$ and $88.00$
+
+$H_0: \sigma^2 = 500$  
+$H_1: \sigma^2 \neq 500$  
+Since $36.14$ is less than the lower critical value, we reject the null hypothesis at $\alpha = 0.05$.
 
 *step b*
 
@@ -730,7 +735,7 @@ coef(lm_a)["budget"]
 
 **Your Answer:**
 
-The estimated value of $\beta_1$(the coefficient on budget) is 2.547.
+The estimated value of $\beta_1$ (the coefficient on budget) is $2.547$.
 
 *step c*
 
@@ -746,7 +751,7 @@ p_one_sided
 
 **Your Answer:**
 
-One-sided p-value = 1. There is no evidence that $\beta_1$ < 0, and the estimate is strongly positive. Therefore, Chantal's claim seems more valid.
+One-sided p-value = 1. There is no evidence that $\beta_1 < 0$, and the estimate is strongly positive. Therefore, Chantal's claim seems more valid.
 
 *step d*
 
@@ -762,7 +767,7 @@ summary(lm_d)
 
 **Your Answer:**
 
-The estimated model is log(Profits)_i = 6.12 + 0.673 log(Budget)_i.
+The estimated model is $\log(\text{Profits})_i = 6.12 + 0.673 \log(\text{Budget})_i$.
 The coefficient on Log Budget is positive and highly significant.
 
 *step e*
@@ -774,8 +779,8 @@ coef(summary(lm_d))["LogBudget", "Estimate"]
 
 **Your Answer:**
 
-The estimated value of $\beta_1$ is 0.673.
-This implies that, on average, a 1% increase in a movie’s budget increases profits by about 0.67%. The coefficient can be interpreted as the elasticity of profits with respect to budget, and it is positive and highly significant.
+The estimated value of $\beta_1$ is $0.673$.  
+This implies that, on average, a 1% increase in a movie’s budget increases profits by about $0.67\%$. The coefficient can be interpreted as the elasticity of profits with respect to budget, and it is positive and significant.
 
 *step f*
 
@@ -787,7 +792,7 @@ summary(lm_d)$r.squared
 
 **Your Answer:**
 
-lm_a = 0.4321711 and lm_d = 0.3201098. The model with the higher R-squared value fits the data better. Therefore, the level-level model explains more of the variation in profits and provides a better fit.
+lm\_a = $0.432$ and lm\_d = $0.320$. The model with the higher $R^2$ value fits the data better. Therefore, the level-level model explains more of the variation in profits and provides a better fit than the log-log model.
 
 *step g*
 
@@ -801,9 +806,9 @@ coef(lm_d)["LogBudget"]
 
 **Your Answer:**
 
-In the level–level model, the estimated coefficient on Budget is around 2.55, meaning that each additional dollar spent on production increases profits by about $2.55.
-In the log–log model, the coefficient on Log Budget is 0.67, which implies that a 1% increase in a movie’s budget is associated with about a 0.67% increase in profits.
-Therefore, Chantal appears to be correct, since higher budgets generally lead to higher profits. However, the effect is not one-to-one, so the studio should invest more in promising movies, rather than increasing every movie’s budget indiscriminately.
+In the level–level model, the estimated coefficient on Budget is around $2.55$, meaning that each additional dollar spent on production increases profits by about \$2.55.  
+In the log–log model, the coefficient on Log Budget is $0.67$, which implies that a 1% increase in a movie’s budget is associated with about a $0.67\%$ increase in profits.  
+Therefore, Chantal appears to be correct, since higher budgets generally lead to higher profits. However, the effect is not one-to-one, so the studio should invest more in promising movies, rather than uniformly increasing budgets.
 
 2
 
@@ -863,7 +868,7 @@ summary(lm3)
 
 **Your Answer:**
 
-The coefficient for male first actors is positive but not statistically significant (p = 0.19). This suggests that movies with male lead actors have slightly higher budgets on average, but the difference is not large, which is consistent with the plot in step a.
+The coefficient for male first actors is positive but not statistically significant ($p = 0.19$). This suggests that movies with male lead actors have slightly higher budgets on average, but the difference is not statistically different from zero, consistent with the plot in (a).
 
 *step c*
 
@@ -984,14 +989,10 @@ summary(ols_model)
 
 **Your Answer:**
 
-Coefficients:
-                  Estimate Std. Error t value Pr(>|t|)
+Release month coefficient: $0.01517$ (Std. Error $0.02652$, $t$-statistic $0.572$, $p$-value $0.568$)  
 
-release_month      0.01517    0.02652   0.572    0.568  
-
-H_0: \beta_month=0
-H_1: \beta_month =\= 0
-with alpha = 0.05. t-statistic = 0.572, p-value = 0.568 and df = 251. Two-tailed critical value = +/- 1.97. Therefore, since the critical value of two tailed test is larger than t-value, we fail to reject null hypothesis that the coefficient that belong to month of release is zero.
+$H_0: \beta_{\text{month}} = 0$  
+$H_1: \beta_{\text{month}} \neq 0$ with $\alpha = 0.05$. $t$-statistic $= 0.572$, $p$-value $= 0.568$, $df = 251$. Two-tailed critical value $= \pm 1.97$. Therefore, since the absolute $t$-value is less than the critical value, we fail to reject the null hypothesis and conclude that release month does not have a significant linear effect on profits.
 
 *step d*
 
