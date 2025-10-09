@@ -943,6 +943,7 @@ The highest mean_profit_by_month can be seen during June and December, meaning t
 #WRITE YOUR CODE HERE
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
 movies_positive <- subset(movies, profit > 0 & budget > 0)
 >>>>>>> Stashed changes
@@ -954,6 +955,13 @@ movies1_positive$english_dummy_var <- ifelse(movies1_positive$original_language 
 
 ols_model<-lm(log(profit)~log(budget)+english_dummy_var+release_month, data = movies1_positive)
 =======
+ols_model<-lm(log(profit)~log(budget)+english_dummy_var+release_month, data = movies_positive)
+>>>>>>> Stashed changes
+=======
+movies_positive <- subset(movies, profit > 0 & budget > 0)
+
+movies_positive$english_dummy_var <- ifelse(movies_positive$original_language == "en", 1, 0)
+
 ols_model<-lm(log(profit)~log(budget)+english_dummy_var+release_month, data = movies_positive)
 >>>>>>> Stashed changes
 =======
