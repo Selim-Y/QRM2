@@ -908,7 +908,24 @@ summary(ols_model)
 
 **Your Answer:**
 
-Write your formulated response here.
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.2345 -0.6628  0.2446  0.9191  3.7516 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)        6.53081    1.17907   5.539 7.67e-08 ***
+log(budget)        0.68112    0.06245  10.906  < 2e-16 ***
+english_dummy_var -0.66377    0.65315  -1.016    0.310    
+release_month      0.01517    0.02652   0.572    0.568    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.431 on 251 degrees of freedom
+Multiple R-squared:  0.3237,	Adjusted R-squared:  0.3156 
+F-statistic: 40.05 on 3 and 251 DF,  p-value: < 2.2e-16
+
+The log(budget) coefficient shows that 1% increase in budget is associated with 0.68% increase in profits with p-value being less than 0.001 making it statistically significant. English_dummy_var shows to be statistically insignificant with p-value 0.310. The coefficient for release_month is very small meaning little affect on the profits once every varibale is controlled with p-value big enough making the variable statistically insignificant.
 
 *step c*
 
@@ -954,6 +971,7 @@ Write your formulated response here.
 
 =======
 >>>>>>> Stashed changes
+
 
 
 
