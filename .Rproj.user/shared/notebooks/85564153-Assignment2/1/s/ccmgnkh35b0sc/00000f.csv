@@ -1,0 +1,4 @@
+"0","duplicate <- movies[movies$first_actor %in%"
+"0","               movies$first_actor[duplicated(movies$first_actor)], ]"
+"0",""
+"0","head(duplicate)"

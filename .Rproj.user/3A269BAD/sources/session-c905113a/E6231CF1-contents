@@ -1,0 +1,222 @@
+---
+title: "QRM II Graded Assignment (2), Period 1 2025"
+subtitle: "Material by Sjoerd van Alten and Klervie Toczé"
+author: "Fill in your group number and names here"
+date:  "`r format(Sys.Date(), '%d-%m-%Y')`"
+output:
+  pdf_document:
+    number_sections: true
+  html_document:
+    df_print: paged
+
+header-includes:
+- "\\setcounter{section}{-1}"
+- |
+  \usepackage{fvextra}
+  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{
+    showspaces = false,
+    showtabs = false,
+    breaklines,
+    commandchars=\\\{\}
+  }
+format:
+  html:
+    code-overflow: wrap
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+# Week 4 
+
+1. There is another argument going on in the movie studio. *Bob* claims that production budgets are getting out of hand, and that the studio should focus on making cheaper movies. *Chantal* disagrees. She tells Bob that ``Every dollar we spend on movie production is more than offset by the increase in movie profits''. 
+
+a. Set up a regression model to test Chantal's claim, and estimate it. That is, estimate: $$\text{Profits}_i=\beta_0+\beta_1 \text{Budget}_i +\varepsilon_i.$$ Print a summary of your estimated model. \textbf{[2 points]}
+b. What is the estimated value of $\beta_1$ and how do you interpet it? \textbf{[2 points]}
+c. Test for the null hypothesis that $\beta_1 \geq 0$. Report the p-value and state your conclusion. \textbf{[2 points]} 
+d. Next, estimate the model $$\text{Log Profits}_i=\beta_0+\beta_1 \text{Log Budget}_i +\varepsilon_i.$$ When creating the variables Log Profits and Log Budget, make sure that movies with a Revenue or Budget of zero are assigned the value "NA". Print a summary of your estimated model \textbf{[2 points]}
+e. What is the estimated value of $\beta_1$ and how do you interpet it? \textbf{[2 points]}
+f. Which model has better fit? The level-level model or the log-log model? Explain. \textbf{[2 points]}
+g. Who do you think is correct? Bob or Chantal? What would you advise the movie studio to do? \textbf{[2 points]}
+
+*step a*
+
+```{r}
+movies <- read.delim("movies1.tsv", header = TRUE)
+movies$Profits <- movies$revenue - movies$budget
+lm_a <- lm(Profits ~ budget, data = movies)
+summary(lm_a)
+```
+
+**Your Answer:**
+
+Call:
+lm(formula = Profits ~ budget, data = movies)
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-420678243  -37658344   14833690   17600279 1964947903 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -1.760e+07  7.165e+06  -2.456   0.0144 *  
+budget       2.547e+00  1.302e-01  19.566   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 131700000 on 503 degrees of freedom
+Multiple R-squared:  0.4322,	Adjusted R-squared:  0.431 
+F-statistic: 382.8 on 1 and 503 DF,  p-value: < 2.2e-16
+
+The estimated coefficient on budget is positive and highly significant.
+
+
+*step b*
+
+```{r}
+coef(lm_a)["budget"]
+```
+
+**Your Answer:**
+
+The estimated value of $\beta_1$(the coefficient on budget) is 2.547.
+
+*step c*
+
+```{r}
+co <- summary(lm_a)$coefficients["budget", ]
+tval <- co["t value"]
+df   <- lm_a$df.residual
+
+p_one_sided <- pt(tval, df)
+p_one_sided
+```
+
+**Your Answer:**
+
+One-sided p-value = 1. There is no evidence that $\beta_1$ < 0, and the estimate is strongly positive. Therefore, Chantal's claim seems more valid.
+
+*step d*
+
+```{r}
+movies$budget[movies$budget == 0]   <- NA
+movies$revenue[movies$revenue == 0] <- NA
+movies$Profits[movies$Profits <= 0] <- NA
+movies$LogBudget  <- log(movies$budget)
+movies$LogProfits <- log(movies$Profits)
+lm_d <- lm(LogProfits ~ LogBudget, data = movies)
+summary(lm_d)
+```
+
+**Your Answer:**
+
+The estimated model is log(Profits)_i = 6.12 + 0.673 log(Budget)_i.
+The coefficient on Log Budget is positive and highly significant.
+
+*step e*
+
+```{r}
+coef(summary(lm_d))["LogBudget", "Estimate"]
+```
+
+**Your Answer:**
+
+The estimated value of $\beta_1$ is 0.673.
+This implies that, on average, a 1% increase in a movie’s budget increases profits by about 0.67%. The coefficient can be interpreted as the elasticity of profits with respect to budget, and it is positive and highly significant.
+
+*step f*
+
+```{r}
+summary(lm_a)$r.squared
+summary(lm_d)$r.squared
+```
+
+**Your Answer:**
+
+lm_a = 0.4321711 and lm_d = 0.3201098. The model with the higher R-squared value fits the data better. Therefore, the level-level model explains more of the variation in profits and provides a better fit.
+
+*step g*
+
+```{r}
+summary(lm_a)
+summary(lm_d)
+
+coef(lm_a)["budget"]
+coef(lm_d)["LogBudget"]
+```
+
+**Your Answer:**
+
+In the level–level model, the estimated coefficient on Budget is around 2.55, meaning that each additional dollar spent on production increases profits by about $2.55.
+In the log–log model, the coefficient on Log Budget is 0.67, which implies that a 1% increase in a movie’s budget is associated with about a 0.67% increase in profits.
+Therefore, Chantal appears to be correct, since higher budgets generally lead to higher profits. However, the effect is not one-to-one, so the studio should invest more in promising movies, rather than increasing every movie’s budget indiscriminately.
+
+
+
+2
+
+a. Make a plot with a 95% confidence interval with the mean log of budget on the y-axis, and whether the first actor of the movie is male or female on the x-axis. What do you conclude? \textbf{[2 points]} 
+b. Estimate the following simple OLS model: $log(budget)_i=\beta_0+\beta_1 \text(FirstActorMale)_i + \varepsilon_i.$ Is the estimated coefficient for $\beta_1$ significantly different from zero? How do you interpret its estimate, and how does this relate to your conclusion in 2a? \textbf{[2 points]}
+c. Now, have a close look at your data frame. Can you find any instances of male first actors who are wrongly labeled as being female, or vice versa? What would such mislabelling mean for the coefficient you estimated under 2b? \textbf{[2 points]}
+
+*step a*
+
+```{r}
+library(ggplot2)
+library(dplyr)
+movies <- read.delim("movies1.tsv", header = TRUE)
+sum_budget <- movies %>%
+  filter(!is.na(budget), budget > 0, !is.na(first_actor_gender)) %>%
+  mutate(log_budget = log(budget)) %>%
+  group_by(first_actor_gender) %>%
+  summarise(mean_log_budget = mean(log_budget, na.rm = TRUE),
+    se = sd(log_budget, na.rm = TRUE) / sqrt(n()))
+
+  
+ ggplot(sum_budget, aes(x = first_actor_gender, y = mean_log_budget)) +
+  geom_point(size = 2, color = "black") +
+  geom_errorbar(aes(ymin = mean_log_budget - 1.96*se,
+                    ymax = mean_log_budget + 1.96*se),
+                width = 0.2, color = "black") +
+  labs(x = "First Actor Gender",
+       y = "Mean Log of Budget",) +
+  theme_minimal()
+```
+
+**Your Answer:**
+
+It appears that movies with male lead actors have a higher average log budget than those with female lead actors. However, the overlap in the confidence intervals suggests that the difference is not large.
+
+*step b*
+
+```{r}
+movies_0 <- movies %>%
+  filter(!is.na(budget), budget > 0, !is.na(first_actor_gender)) %>%
+  mutate(log_budget = log(budget))
+
+
+lm3 <- lm(log(budget) ~ first_actor_gender, data = movies_0)
+summary(lm3)
+```
+
+**Your Answer:**
+
+The coefficient for male first actors is positive but not statistically significant (p = 0.19). This suggests that movies with male lead actors have slightly higher budgets on average, but the difference is not large, which is consistent with the plot in step a.
+
+
+*step c*
+
+```{r}
+duplicate <- movies[movies$first_actor %in%
+               movies$first_actor[duplicated(movies$first_actor)], ]
+
+head(duplicate)
+```
+
+**Your Answer:**
+
+Some actors show up more than once in the data. If any of them have the wrong gender, it will mean that there is a mistake in how the data was entered. So yea, this could mess up the results from 2b.

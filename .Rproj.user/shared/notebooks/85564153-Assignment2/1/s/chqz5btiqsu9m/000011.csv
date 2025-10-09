@@ -1,0 +1,4 @@
+"0",""
+"0","# Show results for best month in a table as before"
+"0","best_row <- pred_df[which.max(pred_df$pred_profit), ]"
+"0","knitr::kable(best_row, digits = 0)"

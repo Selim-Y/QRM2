@@ -712,79 +712,98 @@ g.  Who do you think is correct? Bob or Chantal? What would you advise
 *step a*
 
 ```{r}
-#WRITE YOUR CODE HERE
-
+movies$Profits <- movies$revenue - movies$budget
+lm_a <- lm(Profits ~ budget, data = movies)
+summary(lm_a)
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+The estimated coefficient on budget is positive and highly significant.
 
 *step b*
 
 ```{r}
-#WRITE YOUR CODE HERE
+coef(lm_a)["budget"]
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+The estimated value of $\beta_1$(the coefficient on budget) is 2.547.
 
 *step c*
 
 ```{r}
-#WRITE YOUR CODE HERE
+co <- summary(lm_a)$coefficients["budget", ]
+tval <- co["t value"]
+df   <- lm_a$df.residual
+
+p_one_sided <- pt(tval, df)
+p_one_sided
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+One-sided p-value = 1. There is no evidence that $\beta_1$ < 0, and the estimate is strongly positive. Therefore, Chantal's claim seems more valid.
 
 *step d*
 
 ```{r}
-#WRITE YOUR CODE HERE
-
+movies$budget[movies$budget == 0]   <- NA
+movies$revenue[movies$revenue == 0] <- NA
+movies$Profits[movies$Profits <= 0] <- NA
+movies$LogBudget  <- log(movies$budget)
+movies$LogProfits <- log(movies$Profits)
+lm_d <- lm(LogProfits ~ LogBudget, data = movies)
+summary(lm_d)
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+The estimated model is log(Profits)_i = 6.12 + 0.673 log(Budget)_i.
+The coefficient on Log Budget is positive and highly significant.
 
 *step e*
 
 ```{r}
-#WRITE YOUR CODE HERE
+coef(summary(lm_d))["LogBudget", "Estimate"]
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+The estimated value of $\beta_1$ is 0.673.
+This implies that, on average, a 1% increase in a movie’s budget increases profits by about 0.67%. The coefficient can be interpreted as the elasticity of profits with respect to budget, and it is positive and highly significant.
 
 *step f*
 
 ```{r}
-#WRITE YOUR CODE HERE
+summary(lm_a)$r.squared
+summary(lm_d)$r.squared
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+lm_a = 0.4321711 and lm_d = 0.3201098. The model with the higher R-squared value fits the data better. Therefore, the level-level model explains more of the variation in profits and provides a better fit.
 
 *step g*
 
 ```{r}
-#WRITE YOUR CODE HERE
+summary(lm_a)
+summary(lm_d)
 
+coef(lm_a)["budget"]
+coef(lm_d)["LogBudget"]
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+In the level–level model, the estimated coefficient on Budget is around 2.55, meaning that each additional dollar spent on production increases profits by about $2.55.
+In the log–log model, the coefficient on Log Budget is 0.67, which implies that a 1% increase in a movie’s budget is associated with about a 0.67% increase in profits.
+Therefore, Chantal appears to be correct, since higher budgets generally lead to higher profits. However, the effect is not one-to-one, so the studio should invest more in promising movies, rather than increasing every movie’s budget indiscriminately.
 
 2
 
@@ -805,35 +824,61 @@ c.  Now, have a close look at your data frame. Can you find any
 *step a*
 
 ```{r}
-#WRITE YOUR CODE HERE
+sum_budget <- movies %>%
+  filter(!is.na(budget), budget > 0, !is.na(first_actor_gender)) %>%
+  mutate(log_budget = log(budget)) %>%
+  group_by(first_actor_gender) %>%
+  summarise(mean_log_budget = mean(log_budget, na.rm = TRUE),
+    se = sd(log_budget, na.rm = TRUE) / sqrt(n()))
+
+  
+ ggplot(sum_budget, aes(x = first_actor_gender, y = mean_log_budget)) +
+  geom_point(size = 2, color = "black") +
+  geom_errorbar(aes(ymin = mean_log_budget - 1.96*se,
+                    ymax = mean_log_budget + 1.96*se),
+                width = 0.2, color = "black") +
+  labs(x = "First Actor Gender",
+       y = "Mean Log of Budget",) +
+  theme_minimal()
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+It appears that movies with male lead actors have a higher average log budget than those with female lead actors. However, the overlap in the confidence intervals suggests that the difference is not large.
+
 
 *step b*
 
 ```{r}
-#WRITE YOUR CODE HERE
+movies_0 <- movies %>%
+  filter(!is.na(budget), budget > 0, !is.na(first_actor_gender)) %>%
+  mutate(log_budget = log(budget))
+
+
+lm3 <- lm(log(budget) ~ first_actor_gender, data = movies_0)
+summary(lm3)
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+The coefficient for male first actors is positive but not statistically significant (p = 0.19). This suggests that movies with male lead actors have slightly higher budgets on average, but the difference is not large, which is consistent with the plot in step a.
 
 *step c*
 
 ```{r}
-#WRITE YOUR CODE HERE
+duplicate <- movies[movies$first_actor %in%
+               movies$first_actor[duplicated(movies$first_actor)], ]
+
+head(duplicate)
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+Some actors show up more than once in the data. If any of them have the wrong gender, it will mean that there is a mistake in how the data was entered. So yea, this could mess up the results from 2b.
+
 
 # Week 5
 
@@ -875,8 +920,8 @@ f.  Estimate a model that is able to predict the revenue of this movie.
 ```{r}
 #WRITE YOUR CODE HERE
 
-movies1$profit <- movies1$revenue - movies1$budget
-ean_profit_by_month <- aggregate(profit ~ release_month, data = movies1, FUN = mean, na.rm = TRUE)
+movies$profit <- movies$revenue - movies$budget
+mean_profit_by_month <- aggregate(profit ~ release_month, data = movies, FUN = mean, na.rm = TRUE)
 
 ggplot(mean_profit_by_month, aes(x = factor(release_month), y = profit)) +
   geom_bar(stat = "identity") +
@@ -896,12 +941,20 @@ The highest mean_profit_by_month can be seen during June and December, meaning t
 
 ```{r}
 #WRITE YOUR CODE HERE
+<<<<<<< Updated upstream
+=======
+movies_positive <- subset(movies, profit > 0 & budget > 0)
+>>>>>>> Stashed changes
 
-movies1_positive <- subset(movies1, profit > 0 & budget > 0)
+movies_positive$english_dummy_var <- ifelse(movies_positive$original_language == "en", 1, 0)
 
+<<<<<<< Updated upstream
 movies1_positive$english_dummy_var <- ifelse(movies1_positive$original_language == "en", 1, 0)
 
 ols_model<-lm(log(profit)~log(budget)+english_dummy_var+release_month, data = movies1_positive)
+=======
+ols_model<-lm(log(profit)~log(budget)+english_dummy_var+release_month, data = movies_positive)
+>>>>>>> Stashed changes
 
 summary(ols_model)
 
@@ -942,31 +995,116 @@ Write your formulated response here.
 *step d*
 
 ```{r}
-#WRITE YOUR CODE HERE
+movies$english <- as.integer(movies$original_language == "en")
+movies$log_budget <- log10(movies$budget)
+
+
+#Clean data, was receiving NA/NAN/InF error
+movies <- movies %>%
+  mutate(
+    profit = revenue - budget,
+    log_profits = log(profit),
+    log_budget = log10(budget),
+    english = as.integer(original_language == "en")
+  ) %>%
+  filter(
+    is.finite(log_profits),
+    is.finite(log_budget),
+    !is.na(release_month),
+    !is.na(english)
+  )
+
+model2 <- lm(log_profits ~ log_budget + english + factor(release_month), data = movies)
+summary(model2)
+
+# Joint test: are all month terms zero?
+anova(ols_model, model2)
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+Based on the mean profits by release month (see part a), the pattern does not appear strictly linear, suggesting that a more flexible modeling approach may be warranted. We estimated a new regression with month of release as a factor variable, allowing each month its own effect.
+
+However, the joint hypothesis test (ANOVA) for the significance of the month dummies shows that they are not collectively statistically significant (p > 0.05). This means we fail to reject the null hypothesis that month of release does not impact profits, even when allowing for a flexible functional form. Thus, neither the linear nor the flexible specification provides strong evidence that month of release matters for profits in this data.
 
 *step e*
 
 ```{r}
-#WRITE YOUR CODE HERE
+testdata <- movies %>%
+  summarize(
+    log_budget = mean(log_budget, na.rm = TRUE),
+    english = 1
+  ) %>%
+  crossing(release_month = 1:12)
+
+testdata$pred_log_profit <- predict(model2, newdata = testdata)
+testdata$pred_profit <- exp(testdata$pred_log_profit)
+
+ggplot(testdata, aes(x = factor(release_month), y = pred_profit)) +
+  geom_col(fill = "forestgreen") +
+  labs(
+    x = "Release Month",
+    y = "Predicted Profit",
+    title = "Predicted Profits by Release Month (Flexible Model)"
+  ) +
+  theme_minimal()
 
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+Using the data from (D), we can create a predicted profitability graph by release month. In this graph, we can observe that the highest expected profits are in the month of June by a wide margin, followed by November, December and January which are all quite close to each other.
 
 *step f*
 
 ```{r}
-#WRITE YOUR CODE HERE
+new_movie <- tibble(
+  log_budget = log(4e7),
+  english = 1,
+  release_month = 1:12
+)
 
+# Use flexible model to get profit prediction for each month
+pred <- predict(model2, newdata = new_movie, interval = "prediction", level = 0.99)
+pred_df <- cbind(new_movie, as.data.frame(pred))
+pred_df$pred_profit <- exp(pred_df$fit)
+pred_df$pred_lwr <- exp(pred_df$lwr)
+pred_df$pred_upr <- exp(pred_df$upr)
+
+# Add budget back to get revenue prediction
+pred_df <- pred_df %>%
+  mutate(
+    predicted_revenue = pred_profit + 4e7,
+    lower_99 = pred_lwr + 4e7,
+    upper_99 = pred_upr + 4e7
+  )
+
+# Plot predicted revenue with 99% prediction interval for each month
+ggplot(pred_df, aes(x = factor(release_month), y = predicted_revenue)) +
+  geom_col(fill = "dodgerblue", alpha = 0.7) +
+  geom_errorbar(aes(ymin = lower_99, ymax = upper_99), width = 0.3, color = "black") +
+  labs(
+    x = "Release Month",
+    y = "Predicted Revenue",
+    title = "Predicted Revenue and 99% Prediction Interval by Release Month"
+  ) +
+  theme_minimal()
+
+# Show results for best month in a table as before
+best_row <- pred_df[which.max(pred_df$pred_profit), ]
+knitr::kable(best_row, digits = 0)
 ```
+**Your Answer:**
+
+Using the flexible model, we predicted revenue for the new English Thriller with a $40,000,000 budget across all release months. The plot above shows the predicted revenue and 99% prediction interval for each month.
+
+The model suggests June (month 6) would yield the highest expected revenue, with predicted revenues of 192 trillion dollars and a 99% prediction interval of between 899 billion and 40.97 quadrillion.
+
+There is a considerably wide interval which reflects high uncertainty in movie revenue predictions, however June is the best month according to the model.
+
+*(See image2 for table details.)*
+
 <<<<<<< Updated upstream
 
 
