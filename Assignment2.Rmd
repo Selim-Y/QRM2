@@ -976,11 +976,22 @@ The log(budget) coefficient shows that 1% increase in budget is associated with 
 ```{r}
 #WRITE YOUR CODE HERE
 
+ols_model<-lm(log(profit)~log(budget)+english_dummy_var+release_month, data = movies_positive)
+
+summary(ols_model)
+
 ```
 
 **Your Answer:**
 
-Write your formulated response here.
+Coefficients:
+                  Estimate Std. Error t value Pr(>|t|)
+
+release_month      0.01517    0.02652   0.572    0.568  
+
+H_0: \beta_month=0
+H_1: \beta_month =\= 0
+with alpha = 0.05. t-statistic = 0.572, p-value = 0.568 and df = 251. Two-tailed critical value = +/- 1.97. Therefore, since the critical value of two tailed test is larger than t-value, we fail to reject null hypothesis that the coefficient that belong to month of release is zero.
 
 *step d*
 
@@ -1098,6 +1109,7 @@ There is a considerably wide interval which reflects high uncertainty in movie r
 
 =======
 >>>>>>> Stashed changes
+
 
 
 
