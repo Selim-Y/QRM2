@@ -877,7 +877,7 @@ head(duplicate)
 
 **Your Answer:**
 
-Some actors show up more than once in the data. If any of them have the wrong gender, it will mean that there is a mistake in how the data was entered. So yea, this could mess up the results from 2b.
+Some actors show up more than once in the data. If any of them have the wrong gender, it will mean that there is a mistake in how the data was entered. This could tamper with the results obtained from 2b.
 
 
 # Week 5
@@ -940,37 +940,11 @@ The highest mean_profit_by_month can be seen during June and December, meaning t
 *step b*
 
 ```{r}
-#WRITE YOUR CODE HERE
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-movies_positive <- subset(movies, profit > 0 & budget > 0)
->>>>>>> Stashed changes
-
-movies_positive$english_dummy_var <- ifelse(movies_positive$original_language == "en", 1, 0)
-
-<<<<<<< Updated upstream
-movies1_positive$english_dummy_var <- ifelse(movies1_positive$original_language == "en", 1, 0)
-
-ols_model<-lm(log(profit)~log(budget)+english_dummy_var+release_month, data = movies1_positive)
-=======
-ols_model<-lm(log(profit)~log(budget)+english_dummy_var+release_month, data = movies_positive)
->>>>>>> Stashed changes
-=======
 movies_positive <- subset(movies, profit > 0 & budget > 0)
 
 movies_positive$english_dummy_var <- ifelse(movies_positive$original_language == "en", 1, 0)
 
 ols_model<-lm(log(profit)~log(budget)+english_dummy_var+release_month, data = movies_positive)
->>>>>>> Stashed changes
-=======
-movies_positive <- subset(movies, profit > 0 & budget > 0)
-
-movies_positive$english_dummy_var <- ifelse(movies_positive$original_language == "en", 1, 0)
-
-ols_model<-lm(log(profit)~log(budget)+english_dummy_var+release_month, data = movies_positive)
->>>>>>> Stashed changes
 
 summary(ols_model)
 
@@ -1118,8 +1092,6 @@ Using the flexible model, we predicted revenue for the new English Thriller with
 The model suggests June (month 6) would yield the highest expected revenue, with predicted revenues of 192 trillion dollars and a 99% prediction interval of between 899 billion and 40.97 quadrillion.
 
 There is a considerably wide interval which reflects high uncertainty in movie revenue predictions, however June is the best month according to the model.
-
-*(See image2 for table details.)*
 
 <<<<<<< Updated upstream
 
