@@ -875,6 +875,17 @@ f.  Estimate a model that is able to predict the revenue of this movie.
 ```{r}
 #WRITE YOUR CODE HERE
 
+movies1$profit <- movies1$revenue - movies1$budget
+ean_profit_by_month <- aggregate(profit ~ release_month, data = movies1, FUN = mean, na.rm = TRUE)
+
+ggplot(mean_profit_by_month, aes(x = factor(release_month), y = profit)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Mean Profits by Month of Release",
+    x = "Month of Release",
+    y = "Mean Profit (Revenue - Budget)"
+  ) 
+
 ```
 
 **Your Answer:**
@@ -936,3 +947,4 @@ Write your formulated response here.
 
 =======
 >>>>>>> Stashed changes
+
