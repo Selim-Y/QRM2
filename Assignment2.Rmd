@@ -890,7 +890,7 @@ ggplot(mean_profit_by_month, aes(x = factor(release_month), y = profit)) +
 
 **Your Answer:**
 
-Write your formulated response here.
+The highest mean_profit_by_month can be seen during June and December, meaning that the release month matters. The reason behind such results can be the release of holiday-themed movies in these months.
 
 *step b*
 
@@ -947,4 +947,5 @@ Write your formulated response here.
 
 =======
 >>>>>>> Stashed changes
+
 
